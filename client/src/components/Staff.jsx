@@ -1,10 +1,13 @@
 import React from "react";
 import Navbar from "./Navbar";
 
-const Staff = () => {
+const Staff = ({ walletAddress, setWalletAddress }) => {
   return (
     <div>
-      <Navbar />
+      <Navbar
+        walletAddress={walletAddress}
+        setWalletAddress={setWalletAddress}
+      />
     </div>
   );
 };

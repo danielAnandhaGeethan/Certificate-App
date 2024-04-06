@@ -5,7 +5,7 @@ import Register from "./Register";
 
 const Home = ({ walletAddress, setWalletAddress }) => {
   const [current, setCurrent] = useState("Login");
-  const display = "Your Health, Your Data, Securely Stored.";
+  const display = "Store and verify academic/ncertificates securely.";
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -61,10 +61,15 @@ const Home = ({ walletAddress, setWalletAddress }) => {
                 </div>
               ) : (
                 <div className="hidden md:block">
-                  <h1 className="h-[385px] border border-white/20 flex justify-center items-center rounded-xl">
-                    <span className="w-[75%] text-center font-semibold">
-                      {display}
-                    </span>
+                  <h1 className="h-[385px] border border-white/20 flex flex-col justify-center items-center rounded-xl">
+                    {display.split("/n").map((line, index) => (
+                      <span
+                        className="w-[75%] text-center font-semibold"
+                        key={index}
+                      >
+                        {line}
+                      </span>
+                    ))}
                   </h1>
                 </div>
               )}
@@ -79,10 +84,15 @@ const Home = ({ walletAddress, setWalletAddress }) => {
                 </div>
               ) : (
                 <div className="hidden md:block">
-                  <h1 className="h-[385px] border border-white/20 flex justify-center items-center rounded-xl">
-                    <span className="w-[75%] text-center font-semibold">
-                      {display}
-                    </span>
+                  <h1 className="h-[385px] border border-white/20 flex flex-col justify-center items-center rounded-xl">
+                    {display.split("/n").map((line, index) => (
+                      <span
+                        className="w-[75%] text-center font-semibold"
+                        key={index}
+                      >
+                        {line}
+                      </span>
+                    ))}
                   </h1>
                 </div>
               )}
