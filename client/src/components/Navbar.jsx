@@ -11,12 +11,12 @@ const Navbar = ({ walletAddress, setWalletAddress }) => {
   };
 
   return (
-    <div className="w-full flex justify-center fixed left-0 top-0">
+    <div className="w-full flex justify-center fixed left-0 top-0 border-b">
       <div
         className="py-4 flex items-center gap-4"
         onClick={() => navigate("/")}
       >
-        <h1 className="text-4xl font-semibold cursor-pointer text-[#021627]">
+        <h1 className="text-3xl font-semibold cursor-pointer text-[#6B818C]">
           ABC University
         </h1>
       </div>
