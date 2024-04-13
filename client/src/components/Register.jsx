@@ -142,7 +142,7 @@ const Register = ({ walletAddress, setCurrent }) => {
         </div>
         <div>
           <h1
-            className="text-sm text-blue-100   underline cursor-pointer"
+            className="text-sm text-gray-200 underline cursor-pointer"
             onClick={() => setCurrent("Login")}
           >
             Already Registered? Login

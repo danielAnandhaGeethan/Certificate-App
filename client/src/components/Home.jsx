@@ -37,13 +37,13 @@ const Home = ({ walletAddress, setWalletAddress }) => {
               <h1 className="text-lg text-black/80 font-semibold">
                 Account Address :{" "}
               </h1>
-              <h1 className="text-black/80 font-semibold hover:scale-110 text-md">
+              <h1 className="text-black/80 font-semibold text-md">
                 {walletAddress || ""}
               </h1>
             </div>
             <div className="mt-4">
               <button
-                className="border border-black py-1 px-2 rounded-full hover:scale-105"
+                className="border border-black py-1 px-2 rounded-full"
                 onClick={connectWallet}
               >
                 Switch
@@ -53,7 +53,7 @@ const Home = ({ walletAddress, setWalletAddress }) => {
           <div className="flex grid grid-cols-1 md:grid-cols-2 justify-center shadow-xl rounded-xl h-[385px]">
             <div className="transition-colors duration-400">
               {current === "Login" ? (
-                <div className="bg-[#6B818C] h-[385px] rounded-l-xl flex flex-col justify-center rounded-xl">
+                <div className="bg-[#97ACAF] h-[385px] rounded-l-xl flex flex-col justify-center rounded-xl">
                   <Login
                     walletAddress={walletAddress}
                     setCurrent={setCurrent}
@@ -76,7 +76,7 @@ const Home = ({ walletAddress, setWalletAddress }) => {
             </div>
             <div className="transition-colors duration-400">
               {current === "Register" ? (
-                <div className="bg-[#6B818C] h-[385px] rounded-l-xl flex flex-col justify-center rounded-xl">
+                <div className="bg-[#97ACAF] h-[385px] rounded-l-xl flex flex-col justify-center rounded-xl">
                   <Register
                     walletAddress={walletAddress}
                     setCurrent={setCurrent}
