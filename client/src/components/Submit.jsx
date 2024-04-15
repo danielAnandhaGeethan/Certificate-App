@@ -2,9 +2,8 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 
-const Submit = () => {
+const Submit = ({ getContract }) => {
   const [files, setFiles] = useState([]);
-  const [cids, setCids] = useState([]);
 
   const handleFileChange = (event) => {
     event.preventDefault();
@@ -12,24 +11,27 @@ const Submit = () => {
   };
 
   const storeData = async (data) => {
-    const cid = await axios.post(
-      "https://api.pinata.cloud/pinning/pinJSONToIPFS",
-      data,
-      {
+    try {
+      const response = await axios({
+        method: "post",
+        url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        data: data,
         headers: {
           "Content-Type": "application/json",
           pinata_api_key: "38690e4d17a7e4820ed6",
           pinata_secret_api_key:
             "d3199a0a493b914fd974ffa0ba7bb38fbbffc4acd83b6cbc927e42dc8c7cb7ad",
         },
-      }
-    );
+      });
 
-    return cid;
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleSubmit = async () => {
-    if (files.length !== 7) {
+  const sendDataToPinata = async () => {
+    if (files.length === 0) {
       enqueueSnackbar("Please upload all the files !!!", {
         variant: "error",
         autoHideDuration: 3000,
@@ -37,14 +39,30 @@ const Submit = () => {
       return;
     }
 
-    const uploadedCids = [];
-    for (const file of files) {
-      const cid = storeData(file);
-      uploadedCids.push(cid);
-    }
+    const formData = new FormData();
 
-    setCids(uploadedCids);
+    files.forEach(async (file, index) => {
+      formData.append(`file${index}`, file);
+    });
+    const response = (await storeData(formData)).data.IpfsHash;
+
     setFiles([]);
+
+    return response;
+  };
+
+  const handleSubmit = async () => {
+    const cid = await sendDataToPinata();
+    const certificate = await getContract();
+
+    try {
+      const tx = await certificate.pushData(cid);
+      console.log(tx);
+
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -81,7 +99,7 @@ const Submit = () => {
         <div className="flex justify-center mt-5">
           <button
             className="bg-green-500 px-2 rounded-xl text-lg"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit()}
           >
             Submit
           </button>

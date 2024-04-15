@@ -52,6 +52,7 @@ const Register = ({ walletAddress, setCurrent }) => {
         });
 
         const x = designation;
+        localStorage.setItem("designation", x);
 
         setName("");
         setAge("");

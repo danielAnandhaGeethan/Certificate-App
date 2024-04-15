@@ -22,6 +22,7 @@ const Login = ({ walletAddress, setCurrent }) => {
       .get(`http://localhost:5555/clients/${data}`)
       .then((res) => {
         const designation = res.data.designation;
+        localStorage.setItem("designation", designation);
 
         enqueueSnackbar("Logged In successfully", {
           variant: "success",
