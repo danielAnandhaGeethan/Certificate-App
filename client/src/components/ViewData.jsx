@@ -24,10 +24,8 @@ const ViewData = ({ walletAddress, getContract }) => {
     axios
       .get(`http://localhost:5555/clients/${credentials}`)
       .then(async (res) => {
-        console.log(res);
         try {
           const certificate = await getContract();
-          console.log(certificate);
 
           const size = (await certificate.getSize(walletAddress)).toNumber();
           console.log(size);
@@ -120,12 +118,12 @@ const ViewData = ({ walletAddress, getContract }) => {
           {cids.map((cid, index) => (
             <div
               key={index}
-              className="flex flex-col gap-3 border px-8 py-4 rounded-2xl shadow-lg"
+              className="flex flex-col gap-3 border px-10 py-4 rounded-2xl shadow-lg"
             >
               <h1 className="font-semibold text-[17px] text-center">
                 {files[index]}
               </h1>
-              <div className="flex gap-3">
+              <div className="flex gap-10">
                 <button
                   onClick={() =>
                     handleDownload(cid, `${walletAddress}_${files[index]}`)

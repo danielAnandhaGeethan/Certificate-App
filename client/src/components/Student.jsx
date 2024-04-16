@@ -18,6 +18,7 @@ import { contractAddress, contractAbi } from "../constants/constants";
 const Student = ({ walletAddress, setWalletAddress }) => {
   const [current, setCurrent] = useState(1);
   const [transacts, setTransacts] = useState([]);
+  const designation = localStorage.getItem("designation");
 
   useEffect(() => {
     getTransactions();
@@ -67,7 +68,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           <div
             className={`${
               current === 1 ? "bg-[#6B818C]" : "opacity-30"
-            } h-full px-3 rounded-3xl flex justify-center items-center`}
+            } h-full px-3 rounded-full flex justify-center items-center`}
           >
             <img
               src={submit}
@@ -79,7 +80,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           <div
             className={`${
               current === 2 ? "bg-[#6B818C]" : "opacity-30"
-            } h-full px-3 rounded-3xl flex justify-center items-center`}
+            } h-full px-3 rounded-full flex justify-center items-center`}
           >
             <img
               src={transact}
@@ -91,7 +92,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           <div
             className={`${
               current === 3 ? "bg-[#6B818C]" : "opacity-30"
-            } h-full px-3 rounded-3xl flex justify-center items-center`}
+            } h-full px-3 rounded-full flex justify-center items-center`}
           >
             <img
               src={search}
@@ -103,7 +104,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           <div
             className={`${
               current === 4 ? "bg-[#6B818C]" : "opacity-30"
-            } h-full px-3 rounded-3xl flex justify-center items-center`}
+            } h-full px-3 rounded-full flex justify-center items-center`}
           >
             <img
               src={request}
@@ -115,7 +116,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           <div
             className={`${
               current === 5 ? "bg-[#6B818C]" : "opacity-30"
-            } h-full px-3 rounded-3xl flex justify-center items-center`}
+            } h-full px-3 rounded-full flex justify-center items-center`}
           >
             <img
               src={send}
@@ -133,7 +134,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           ) : current === 3 ? (
             <ViewData
               walletAddress={walletAddress}
-              designation={1}
+              designation={designation}
               getContract={getContract}
             />
           ) : current === 4 ? (
@@ -145,7 +146,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           ) : (
             <Send
               walletAddress={walletAddress}
-              designation="Patient"
+              designation={designation}
               transacts={transacts}
               setTransacts={setTransacts}
             />
