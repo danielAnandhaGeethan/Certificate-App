@@ -4,23 +4,27 @@ pragma solidity >=0.4.22 <0.9.0;
 contract Certificates {
     string public name;
 
-    mapping(address => string) public data;
+    mapping(address => string[]) public data;
 
     constructor() public {
         name = "certificates";
     }
 
-    function pushData(string memory _cid) public {
+    function pushData(address _address, string memory _cid) public {
         require(msg.sender != address(0));
         require(bytes(_cid).length > 0);
 
-        address _addr = msg.sender;
-
-        data[_addr] = _cid;
+        data[_address].push(_cid);
     }
 
-    function getData(address _address) public view returns (string memory) {
+    function getSize(address _address) public view returns (uint256){
+
+        return data[_address].length;
+    }
+
+    function getData(address _address, uint256 _index) public view returns (string memory) {
     
-        return data[_address];
+        require(_index < data[_address].length, "Index out of range");
+        return data[_address][_index];
     }
 }

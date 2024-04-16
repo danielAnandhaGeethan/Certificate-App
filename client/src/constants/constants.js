@@ -1,4 +1,4 @@
-const contractAddress = "0x950d861d3c1aC305766A92BAb12fcdFEC6a8b1Ba";
+const contractAddress = "0x0e296CF541CB041f1761aF0dC95e51e4d6479AbF";
 
 const contractAbi = [
   {
@@ -23,6 +23,10 @@ const contractAbi = [
         name: "",
         type: "address",
       },
+      {
+        name: "",
+        type: "uint256",
+      },
     ],
     name: "data",
     outputs: [
@@ -34,7 +38,7 @@ const contractAbi = [
     payable: false,
     stateMutability: "view",
     type: "function",
-    signature: "0xb90d3d0c",
+    signature: "0xe283b4dd",
   },
   {
     inputs: [],
@@ -66,6 +70,30 @@ const contractAbi = [
         type: "address",
       },
     ],
+    name: "getSize",
+    outputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function",
+    signature: "0x504f1671",
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "_address",
+        type: "address",
+      },
+      {
+        name: "_index",
+        type: "uint256",
+      },
+    ],
     name: "getData",
     outputs: [
       {
@@ -76,8 +104,18 @@ const contractAbi = [
     payable: false,
     stateMutability: "view",
     type: "function",
-    signature: "0x38266b22",
+    signature: "0x2979d025",
   },
 ];
 
-export { contractAddress, contractAbi };
+const files = [
+  "10th Marksheet",
+  "12th Marksheet",
+  "Aadhar",
+  "Community Certificate",
+  "Nativity Certificate",
+  "Transfer Certificate",
+  "Conduct Certificate",
+];
+
+export { contractAddress, contractAbi, files };

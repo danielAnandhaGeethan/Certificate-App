@@ -4,20 +4,24 @@ import React, { useState } from "react";
 
 const Submit = ({ getContract }) => {
   const [files, setFiles] = useState([]);
+  const [cids, setCids] = useState([]);
 
   const handleFileChange = (event) => {
     event.preventDefault();
     setFiles([...files, event.target.files[0]]);
   };
 
-  const storeData = async (data) => {
+  const storeData = async (file, index) => {
     try {
+      const data = new FormData();
+      data.append("file", file);
+
       const response = await axios({
         method: "post",
-        url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
         data: data,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           pinata_api_key: "38690e4d17a7e4820ed6",
           pinata_secret_api_key:
             "d3199a0a493b914fd974ffa0ba7bb38fbbffc4acd83b6cbc927e42dc8c7cb7ad",
@@ -39,27 +43,38 @@ const Submit = ({ getContract }) => {
       return;
     }
 
-    const formData = new FormData();
+    try {
+      const promises = files.map(async (file, index) => {
+        const cid = (await storeData(file, index)).data.IpfsHash;
+        return cid;
+      });
 
-    files.forEach(async (file, index) => {
-      formData.append(`file${index}`, file);
-    });
-    const response = (await storeData(formData)).data.IpfsHash;
+      const uploadedCids = await Promise.all(promises);
 
-    setFiles([]);
+      console.log(uploadedCids);
+      setFiles([]);
 
-    return response;
+      return uploadedCids;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleSubmit = async () => {
-    const cid = await sendDataToPinata();
-    const certificate = await getContract();
-
     try {
-      const tx = await certificate.pushData(cid);
-      console.log(tx);
+      const uploadedCids = await sendDataToPinata();
+      setCids(uploadedCids);
+      const certificate = await getContract();
 
-      window.location.reload();
+      const txPromises = uploadedCids.map(async (cid) => {
+        return await certificate.pushData(cid);
+      });
+
+      const transactions = await Promise.all(txPromises);
+
+      transactions.forEach((tx) => {
+        console.log(tx);
+      });
     } catch (err) {
       console.log(err);
     }

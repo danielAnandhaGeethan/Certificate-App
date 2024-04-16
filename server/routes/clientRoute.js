@@ -1,6 +1,92 @@
 const express = require("express");
 const Client = require("../models/clientModel");
+const Usernames = require("..models/usernameModel");
 const router = express.Router();
+
+router.get("/usernames/:data", async (req, res) => {
+  try {
+    const data = req.params.data.split(",");
+
+    const address = data[0];
+    const designation = data[1];
+
+    let query = {};
+    if (designation === 1) {
+      query = { "students.address": address };
+    } else if (designation === 2) {
+      query = { "staff.address": address };
+    } else {
+      return res.status(400).send({ message: "Invalid designation" });
+    }
+
+    const user = await Usernames.findOne(query);
+
+    if (user) {
+      return res.status(200).json(user);
+    } else {
+      return res.status(400).send({ message: "No such user" });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+});
+
+router.get("usernames/length/:data", async (req, res) => {
+  try {
+    const designation = req.params.data[0];
+
+    let existingUsernames = await Usernames.findOne({});
+
+    if (!existingUsernames) {
+      return res.status(404).send({ message: "No usernames found" });
+    }
+
+    const arrayToSearch =
+      designation === 1 ? existingUsernames.students : existingUsernames.staff;
+
+    const lastUser = arrayToFetch[arrayToFetch.length - 1];
+
+    if (!lastUser) {
+      return res
+        .status(404)
+        .send({ message: "No users found in the specified array" });
+    }
+
+    res.status(200).send(lastUser);
+  } catch (error) {
+    console.error("Error fetching last user:", error);
+    res.status(500).send({ error: "Failed to fetch last user" });
+  }
+});
+
+router.post("/usernames/:data", async (req, res) => {
+  try {
+    const data = req.params.data.split(",");
+
+    const address = data[0];
+    const id = data[1];
+    const designation = data[2];
+
+    let existingUsernames = await Usernames.findOne({});
+
+    if (!existingUsernames) {
+      existingUsernames = new Usernames();
+    }
+
+    const arrayToUpdate =
+      designation === 1 ? existingUsernames.students : existingUsernames.staff;
+
+    arrayToUpdate.push({ address, id });
+    await existingUsernames.save();
+
+    res.status(201).send({ message: "Usernames created successfully" });
+  } catch (error) {
+    console.error("Error creating usernames:", error);
+    res.status(500).send({ error: "Failed to create usernames" });
+  }
+});
 
 router.post("/clients/", async (req, res) => {
   try {
