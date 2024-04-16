@@ -1,6 +1,6 @@
 const express = require("express");
 const Client = require("../models/clientModel");
-const Usernames = require("..models/usernameModel");
+const Usernames = require("../models/usernameModel");
 const router = express.Router();
 
 router.get("/usernames/:data", async (req, res) => {
@@ -8,7 +8,7 @@ router.get("/usernames/:data", async (req, res) => {
     const data = req.params.data.split(",");
 
     const address = data[0];
-    const designation = data[1];
+    const designation = parseInt(data[1]);
 
     let query = {};
     if (designation === 1) {
@@ -33,9 +33,9 @@ router.get("/usernames/:data", async (req, res) => {
   }
 });
 
-router.get("usernames/length/:data", async (req, res) => {
+router.get("/usernames/length/:data", async (req, res) => {
   try {
-    const designation = req.params.data[0];
+    const designation = parseInt(req.params.data);
 
     let existingUsernames = await Usernames.findOne({});
 
@@ -46,7 +46,7 @@ router.get("usernames/length/:data", async (req, res) => {
     const arrayToSearch =
       designation === 1 ? existingUsernames.students : existingUsernames.staff;
 
-    const lastUser = arrayToFetch[arrayToFetch.length - 1];
+    const lastUser = arrayToSearch[arrayToSearch.length - 1];
 
     if (!lastUser) {
       return res
@@ -67,7 +67,7 @@ router.post("/usernames/:data", async (req, res) => {
 
     const address = data[0];
     const id = data[1];
-    const designation = data[2];
+    const designation = parseInt(data[2]);
 
     let existingUsernames = await Usernames.findOne({});
 

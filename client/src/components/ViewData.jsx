@@ -6,9 +6,7 @@ import { files } from "../constants/constants";
 const ViewData = ({ walletAddress, getContract }) => {
   const [cids, setCids] = useState([]);
   const [password, setPassword] = useState("");
-  const [key, setKey] = useState("");
-  const [clicked, setClicked] = useState(false);
-  const [display, setDisplay] = useState(false);
+  const [uploaded, setUploaded] = useState(true);
 
   const designation = localStorage.getItem("designation");
 
@@ -34,13 +32,17 @@ const ViewData = ({ walletAddress, getContract }) => {
           const size = (await certificate.getSize(walletAddress)).toNumber();
           console.log(size);
 
+          if (size === 0) {
+            setUploaded(false);
+            return;
+          }
+
           const temp = [];
           for (let i = 0; i < size; i++) {
             const x = await certificate.getData(walletAddress, i);
             temp.push(x);
           }
           setCids(temp);
-          setClicked(true);
         } catch (err) {
           console.log(err);
         }
@@ -113,34 +115,42 @@ const ViewData = ({ walletAddress, getContract }) => {
           {designation === 1 ? "Get CID" : "Submit"}
         </button>
       </div>
-      <div className="flex flex-col gap-7 items-center w-full">
-        {cids.map((cid, index) => (
-          <div
-            key={index}
-            className="flex flex-col gap-3 border px-8 py-4 rounded-2xl shadow-lg"
-          >
-            <h1 className="font-semibold text-[17px] text-center">
-              {files[index]}
-            </h1>
-            <div className="flex gap-3">
-              <button
-                onClick={() =>
-                  handleDownload(cid, `${walletAddress}_${files[index]}`)
-                }
-                className="bg-[#5E977D] px-2 rounded-full text-[#E5EAD6] hover:scale-105"
-              >
-                Download
-              </button>
-              <button
-                onClick={() => handleView(cid)}
-                className="bg-[#6EAFAF] px-2 text-[#E5EAD6] rounded-full hover:scale-105"
-              >
-                View
-              </button>
+      {uploaded === true ? (
+        <div className="flex flex-col gap-7 items-center w-full">
+          {cids.map((cid, index) => (
+            <div
+              key={index}
+              className="flex flex-col gap-3 border px-8 py-4 rounded-2xl shadow-lg"
+            >
+              <h1 className="font-semibold text-[17px] text-center">
+                {files[index]}
+              </h1>
+              <div className="flex gap-3">
+                <button
+                  onClick={() =>
+                    handleDownload(cid, `${walletAddress}_${files[index]}`)
+                  }
+                  className="bg-[#5E977D] px-2 rounded-full text-[#E5EAD6] hover:scale-105"
+                >
+                  Download
+                </button>
+                <button
+                  onClick={() => handleView(cid)}
+                  className="bg-[#6EAFAF] px-2 text-[#E5EAD6] rounded-full hover:scale-105"
+                >
+                  View
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          <h1 className="text-xl font-semibold">
+            You have not uploaded the certificates yet !!!{" "}
+          </h1>
+        </div>
+      )}
     </div>
   );
 };

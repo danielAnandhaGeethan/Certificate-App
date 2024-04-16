@@ -51,8 +51,28 @@ const Register = ({ walletAddress, setCurrent }) => {
           autoHideDuration: 1000,
         });
 
-        const x = designation;
+        const x = designation === "student" ? 1 : 2;
         localStorage.setItem("designation", x);
+
+        axios
+          .get(`http://localhost:5555/usernames/length/${x}`)
+          .then((res) => {
+            const lastData = res.data;
+
+            const temp = x === 1 ? "S" : "E";
+            const id = temp + (parseInt(lastData.id.slice(1)) + 1).toString();
+
+            const data = [walletAddress, id, x];
+            axios
+              .post(`http://localhost:5555/usernames/${data}`)
+              .then(res)
+              .catch((err) => {
+                console.log(err);
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
 
         setName("");
         setAge("");
@@ -61,7 +81,7 @@ const Register = ({ walletAddress, setCurrent }) => {
         setRePassword("");
 
         setTimeout(() => {
-          navigate(x === "student" ? "/student" : "/staff");
+          navigate(x === 1 ? "/student" : "/staff");
         }, 1000);
       })
       .catch((err) => {
