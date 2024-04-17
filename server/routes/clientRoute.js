@@ -43,6 +43,43 @@ router.get("/usernames/:data", async (req, res) => {
   }
 });
 
+router.get("/usernames/:id/:designation", async (req, res) => {
+  try {
+    const { id, designation } = req.params;
+
+    let query = {};
+    if (parseInt(designation) === 1) {
+      query = { "students.id": id };
+    } else if (parseInt(designation) === 2) {
+      query = { "staff.id": id };
+    } else {
+      return res.status(400).send({ message: "Invalid designation" });
+    }
+
+    if (parseInt(designation) === 1) {
+      const user = await Usernames.findOne(query, { "students.$": 1 });
+
+      if (user) {
+        return res.status(200).json(user);
+      } else {
+        return res.status(400).send({ message: "No such user" });
+      }
+    } else {
+      const user = await Usernames.findOne(query, { "staff.$": 1 });
+
+      if (user) {
+        return res.status(200).json(user);
+      } else {
+        return res.status(400).send({ message: "No such user" });
+      }
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+});
+
 router.get("/usernames/length/:data", async (req, res) => {
   try {
     const designation = parseInt(req.params.data);

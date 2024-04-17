@@ -32,7 +32,6 @@ const ViewData = ({ walletAddress, getContract }) => {
           const certificate = await getContract();
 
           const size = (await certificate.getSize(walletAddress)).toNumber();
-          console.log(size);
 
           if (size === 0) {
             setUploaded(false);

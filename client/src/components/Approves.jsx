@@ -1,13 +1,14 @@
 import axios from "axios";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
+import copy from "../assets/copy.png";
 
 const Approves = ({ walletAddress, getContract }) => {
-  const [data, setData] = useState([]);
+  const [approves, setApproves] = useState([]);
   const [clicked, setClicked] = useState(false);
   const [cids, setCids] = useState([]);
   const [name, setName] = useState("");
-  const [age, setAge] = useState();
+  const [age, setAge] = useState("");
 
   useEffect(() => {
     getApproves();
@@ -24,19 +25,31 @@ const Approves = ({ walletAddress, getContract }) => {
 
     const data = [walletAddress];
 
-    axios
-      .get(`http://localhost:5555/student/${data}`)
-      .then((res) => {
-        const approves = res.data.communications;
+    try {
+      const response = await axios.get(`http://localhost:5555/student/${data}`);
+      const approved = response.data.communications;
 
-        setData(approves);
-      })
-      .catch((err) => {
-        enqueueSnackbar("Server Error !!!", {
-          variant: "error",
-          autoHideDuration: 3000,
-        });
+      let temp = [];
+      await Promise.all(
+        approved.map(async (approve) => {
+          const data = [approve, 1];
+          const getResponse = await axios.get(
+            `http://localhost:5555/usernames/${data}`
+          );
+
+          const username = getResponse.data;
+          temp.push(username.students[0].id);
+        })
+      );
+
+      setApproves(temp);
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar("Server Error !!!", {
+        variant: "error",
+        autoHideDuration: 3000,
       });
+    }
   };
 
   const viewCid = async (student) => {
@@ -45,11 +58,16 @@ const Approves = ({ walletAddress, getContract }) => {
       return;
     }
 
-    const certificate = await getContract();
-
     try {
-      const size = (await certificate.getSize(walletAddress)).toNumber();
-      console.log(size);
+      const response = await axios.get(
+        `http://localhost:5555/usernames/${student}/${1}`
+      );
+      const username = response.data;
+      const receiver = username.students[0].address;
+
+      const certificate = await getContract();
+
+      const size = (await certificate.getSize(receiver)).toNumber();
 
       if (size === 0) {
         return;
@@ -57,16 +75,18 @@ const Approves = ({ walletAddress, getContract }) => {
 
       const temp = [];
       for (let i = 0; i < size; i++) {
-        const x = await certificate.getData(walletAddress, i);
+        const x = await certificate.getData(receiver, i);
         temp.push(x);
       }
       setCids(temp);
 
       axios
-        .get(`http://localhost:5555/staff/${student}`)
+        .get(`http://localhost:5555/staff/${receiver}`)
         .then((res) => {
           setName(res.data.name);
           setAge(res.data.age);
+
+          setClicked(true);
         })
         .catch((err) => {
           console.log(err);
@@ -77,7 +97,7 @@ const Approves = ({ walletAddress, getContract }) => {
   };
 
   const removeData = (key) => {
-    const x = data.filter((datum) => datum !== key);
+    const x = approves.filter((datum) => datum !== key);
 
     axios
       .put(
@@ -91,29 +111,43 @@ const Approves = ({ walletAddress, getContract }) => {
       });
   };
 
+  const copyToClipboard = async (text) => {
+    try {
+      text = cids.join(",");
+      await navigator.clipboard.writeText(text);
+
+      enqueueSnackbar("Copied to Clipboard !! ", {
+        variant: "info",
+        autoHideDuration: 3000,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div>
       <SnackbarProvider />
       <div className="flex flex-col gap-4">
-        {data.length !== 0 ? (
-          data.map((data, index) => (
+        {approves.length !== 0 ? (
+          approves.map((approve, index) => (
             <div
               key={index}
               className="bg-white/40 border border-gray-300 w-[500px] px-10 pt-4 pb-2 rounded-3xl flex flex-col items-center gap-4 shadow-xl"
             >
               <div>
-                <h1 className="text-center">{data}</h1>
+                <h1 className="text-center">{approve}</h1>
               </div>
               <div className="flex justify-between gap-48 px-3">
                 <button
                   className="text-blue-600 font-semibold border border-blue-600 rounded-xl px-1"
-                  onClick={() => viewCid(data)}
+                  onClick={() => viewCid(approve)}
                 >
                   View CID
                 </button>
                 <button
                   className="text-red-600 font-semibold border border-red-600 rounded-xl px-1"
-                  onClick={() => removeData(data)}
+                  onClick={() => removeData(approve)}
                 >
                   Remove
                 </button>
@@ -121,15 +155,23 @@ const Approves = ({ walletAddress, getContract }) => {
               <div
                 className={`${
                   clicked === true ? "opacity-100" : "hidden"
-                } absolute mt-20 bg-white/30 pt-4 pb-2 w-[500px] text-center rounded-2xl`}
+                } absolute mt-20 bg-[#6B818C] py-4 w-[500px] text-center rounded-3xl flex flex-col gap-5`}
               >
                 <h1 className="text-black/80 font-semibold flex justify-between px-8">
                   <span>Name : {name}</span>
                   <span>Age : {age}</span>
                 </h1>
-                <div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-end px-10">
+                    <img
+                      src={copy}
+                      alt="copy"
+                      className="h-5 w-5 cursor-pointer hover:scale-110"
+                      onClick={() => copyToClipboard(cids)}
+                    />
+                  </div>
                   {cids.map((cid, index) => (
-                    <h1 className="text-black/80 font-semibold" key={index}>
+                    <h1 className="font-semibold text-[#E5EAD6]/70" key={index}>
                       {cid}
                     </h1>
                   ))}

@@ -81,7 +81,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={search}
               alt="View"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(1)}
             />
           </div>
@@ -93,7 +93,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={request}
               alt="Requests"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(2)}
             />
           </div>
@@ -105,7 +105,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={send}
               alt="Send"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(3)}
             />
           </div>
