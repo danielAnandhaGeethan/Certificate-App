@@ -19,12 +19,22 @@ router.get("/usernames/:data", async (req, res) => {
       return res.status(400).send({ message: "Invalid designation" });
     }
 
-    const user = await Usernames.findOne(query);
+    if (designation === 1) {
+      const user = await Usernames.findOne(query, { "students.$": 1 });
 
-    if (user) {
-      return res.status(200).json(user);
+      if (user) {
+        return res.status(200).json(user);
+      } else {
+        return res.status(400).send({ message: "No such user" });
+      }
     } else {
-      return res.status(400).send({ message: "No such user" });
+      const user = await Usernames.findOne(query, { "staff.$": 1 });
+
+      if (user) {
+        return res.status(200).json(user);
+      } else {
+        return res.status(400).send({ message: "No such user" });
+      }
     }
   } catch (err) {
     return res.status(500).send({
@@ -126,12 +136,29 @@ router.post("/clients/", async (req, res) => {
   }
 });
 
-router.get("/clients/:data", async (req, res) => {
+router.get("/clients/:address", async (req, res) => {
   try {
-    const data = req.params.data.split(",");
+    const { address } = req.params;
 
-    const address = data[0];
-    const password = data[1];
+    const client = await Client.findOne({
+      address,
+    });
+
+    if (client) {
+      return res.status(200).json(client);
+    } else {
+      return res.status(400).send({ message: "No such user" });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+});
+
+router.get("/clients/:address/:password", async (req, res) => {
+  try {
+    const { address, password } = req.params;
 
     const client = await Client.findOne({
       address,

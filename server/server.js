@@ -1,10 +1,11 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const clientRoute = require("./routes/clientRoute");
+const mongoose = require("mongoose");
 
-const PORT = 5555;
-const URL = "mongodb://127.0.0.1:27017/certificates";
+PORT = 5555;
+MONGO_URI =
+  "mongodb+srv://Daniel:20bai1111@certificates.vzgl1fl.mongodb.net/?retryWrites=true&w=majority";
 
 const app = express();
 
@@ -12,21 +13,19 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
-  console.log(res);
-  return res.status(234).send("Welcome to the App");
+  return res.status(200).send("Welcome to the App");
 });
 
 app.use("/", clientRoute);
 
 mongoose
-  .connect(URL)
-  .then(() => {
-    console.log("App connected to database");
-
+  .connect(MONGO_URI)
+  .then(async () => {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.log(err);
+    console.error("Failed to connect to MongoDB Atlas:", err);
+    process.exit(1);
   });

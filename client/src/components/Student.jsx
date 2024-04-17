@@ -19,10 +19,41 @@ const Student = ({ walletAddress, setWalletAddress }) => {
   const [current, setCurrent] = useState(1);
   const [transacts, setTransacts] = useState([]);
   const designation = localStorage.getItem("designation");
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
 
   useEffect(() => {
     getTransactions();
+    getId();
   });
+
+  const getId = async () => {
+    const data = [walletAddress, designation];
+
+    axios
+      .get(`http://localhost:5555/usernames/${data}`)
+      .then((res) => {
+        const username = res.data;
+
+        setId(username.students[0].id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get(`http://localhost:5555/clients/${walletAddress}`)
+      .then((res) => {
+        const client = res.data;
+
+        setName(client.name);
+        setAge(client.age);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getTransactions = async () => {
     const data = [walletAddress];
@@ -62,6 +93,9 @@ const Student = ({ walletAddress, setWalletAddress }) => {
       <Navbar
         walletAddress={walletAddress}
         setWalletAddress={setWalletAddress}
+        id={id}
+        name={name}
+        age={age}
       />
       <div className="flex flex-col items-center py-28 gap-7">
         <div className="flex justify-center items-center gap-2 fixed h-[8%] rounded-3xl">
@@ -73,7 +107,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={submit}
               alt="Enter"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(1)}
             />
           </div>
@@ -85,7 +119,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={transact}
               alt="Transations"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(2)}
             />
           </div>
@@ -97,7 +131,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={search}
               alt="View"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(3)}
             />
           </div>
@@ -109,7 +143,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={request}
               alt="Requests"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(4)}
             />
           </div>
@@ -121,7 +155,7 @@ const Student = ({ walletAddress, setWalletAddress }) => {
             <img
               src={send}
               alt="Send"
-              className="h-7 w-7 cursor-pointer"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setCurrent(5)}
             />
           </div>

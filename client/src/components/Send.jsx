@@ -55,19 +55,19 @@ const Send = ({ walletAddress, designation, transacts, setTransacts }) => {
   };
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-5 mt-10 md:mt-20">
       <SnackbarProvider />
       <input
         type="text"
         placeholder={`Enter ${
           designation === "1" ? "Staff" : "Student"
         }'s ID . . .`}
-        className="px-5 py-1 focus:outline-none rounded-2xl w-[450px] text-center border border-gray-300"
+        className="px-5 py-1 text-sm focus:outline-none rounded-2xl text-center border border-gray-300"
         value={receiver}
         onChange={(e) => setReceiver(e.target.value)}
       />
       <button onClick={addToStaff}>
-        <span className="bg-blue-500 px-2 py-1 rounded-xl text-black">
+        <span className="bg-blue-500 px-2 py-1 text-sm rounded-full text-black">
           Send
         </span>
       </button>

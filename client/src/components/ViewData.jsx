@@ -10,7 +10,13 @@ const ViewData = ({ walletAddress, getContract }) => {
 
   const designation = localStorage.getItem("designation");
 
-  const getCids = async () => {
+  const getCids = async (text) => {
+    if (text === "Close") {
+      setCids([]);
+      setPassword("");
+      return;
+    }
+
     if (password.length === 0) {
       enqueueSnackbar("Incomplete Data", {
         variant: "warning",
@@ -19,10 +25,8 @@ const ViewData = ({ walletAddress, getContract }) => {
       return;
     }
 
-    const credentials = [walletAddress, password];
-
     axios
-      .get(`http://localhost:5555/clients/${credentials}`)
+      .get(`http://localhost:5555/clients/${walletAddress}/${password}`)
       .then(async (res) => {
         try {
           const certificate = await getContract();
@@ -96,59 +100,80 @@ const ViewData = ({ walletAddress, getContract }) => {
   };
 
   return (
-    <div className="flex flex-col gap-7 items-center">
+    <div
+      className={`${
+        uploaded === true && cids.length === 0 ? "mt-10 md:mt-20" : ""
+      } flex flex-col gap-10 items-center`}
+    >
       <SnackbarProvider />
       <div className="flex gap-3">
         <input
           type="password"
           placeholder="Enter Password . . . "
-          className="focus:outline-none px-2 py-1 rounded-2xl border border-gray-300"
+          className="focus:outline-none text-sm px-2 py-1 rounded-2xl border border-gray-300"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className="bg-blue-500 px-2 rounded-2xl text-black/90"
-          onClick={getCids}
+          className="bg-blue-500 px-2 text-sm rounded-full text-black/90"
+          onClick={(e) => getCids(e.target.innerText)}
         >
-          {designation === 1 ? "Get CID" : "Submit"}
+          {designation === "1"
+            ? cids.length === 0
+              ? "Get Data"
+              : "Close"
+            : "Submit"}
         </button>
       </div>
-      {uploaded === true ? (
-        <div className="flex flex-col gap-7 items-center w-full">
-          {cids.map((cid, index) => (
-            <div
-              key={index}
-              className="flex flex-col gap-3 border px-10 py-4 rounded-2xl shadow-lg"
-            >
-              <h1 className="font-semibold text-[17px] text-center">
-                {files[index]}
-              </h1>
-              <div className="flex gap-10">
-                <button
-                  onClick={() =>
-                    handleDownload(cid, `${walletAddress}_${files[index]}`)
-                  }
-                  className="bg-[#5E977D] px-2 rounded-full text-[#E5EAD6] hover:scale-105"
-                >
-                  Download
-                </button>
-                <button
-                  onClick={() => handleView(cid)}
-                  className="bg-[#6EAFAF] px-2 text-[#E5EAD6] rounded-full hover:scale-105"
-                >
-                  View
-                </button>
+      <div>
+        {uploaded === true ? (
+          <div className="flex flex-col gap-7 items-center w-full">
+            {cids.map((cid, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-4 border px-10 py-4 rounded-2xl shadow-lg"
+              >
+                <h1 className="font-semibold text-[16px] text-center text-[#636B61]">
+                  {files[index]}
+                </h1>
+                <div className="flex gap-20">
+                  <button
+                    onClick={() =>
+                      handleDownload(cid, `${walletAddress}_${files[index]}`)
+                    }
+                    className="bg-[#5E977D] px-2 rounded-full text-[#E5EAD6] hover:scale-105"
+                  >
+                    Download
+                  </button>
+                  <button
+                    onClick={() => handleView(cid)}
+                    className="bg-[#6EAFAF] px-2 text-[#E5EAD6] rounded-full hover:scale-105"
+                  >
+                    View
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div>
-          <h1 className="text-xl font-semibold">
-            You have not uploaded the certificates yet !!!{" "}
-          </h1>
-        </div>
-      )}
+            ))}
+          </div>
+        ) : designation === "1" ? (
+          <div>
+            <h1 className="text-xl font-semibold">
+              You have not uploaded the certificates yet !!!{" "}
+            </h1>
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <input
+              type="text"
+              placeholder="Enter the CIDs..."
+              className="focus:outline-none text-sm px-2 py-1 rounded-2xl border border-gray-300"
+            />
+            <button className="bg-blue-500 px-2 text-sm rounded-full text-black/90">
+              Submit
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

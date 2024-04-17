@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import ViewData from "./ViewData";
 import Send from "./Send";
@@ -8,10 +8,45 @@ import search from "../assets/search.png";
 import send from "../assets/send.png";
 import { ethers } from "ethers";
 import { contractAddress, contractAbi } from "../constants/constants";
+import axios from "axios";
 
 const Student = ({ walletAddress, setWalletAddress }) => {
   const [current, setCurrent] = useState(1);
   const designation = localStorage.getItem("designation");
+  const [id, setId] = useState("");
+  const [age, setAge] = useState("");
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    getId();
+  });
+
+  const getId = async () => {
+    const data = [walletAddress, designation];
+
+    axios
+      .get(`http://localhost:5555/usernames/${data}`)
+      .then((res) => {
+        const username = res.data;
+
+        setId(username.staff[0].id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get(`http://localhost:5555/clients/${walletAddress}`)
+      .then((res) => {
+        const client = res.data;
+
+        setName(client.name);
+        setAge(client.age);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getContract = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -32,6 +67,9 @@ const Student = ({ walletAddress, setWalletAddress }) => {
       <Navbar
         walletAddress={walletAddress}
         setWalletAddress={setWalletAddress}
+        id={id}
+        name={name}
+        age={age}
       />
       <div className="flex flex-col items-center py-28 gap-7">
         <div className="flex justify-center items-center gap-2 fixed h-[8%] rounded-3xl">

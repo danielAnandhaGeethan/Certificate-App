@@ -29,6 +29,9 @@ const Home = ({ walletAddress, setWalletAddress }) => {
       <Navbar
         walletAddress={walletAddress}
         setWalletAddress={setWalletAddress}
+        id={""}
+        name={""}
+        age={""}
       />
       <div className="flex justify-center items-center h-screen bg-white pt-8">
         <div className="flex flex-col justify-center items-center gap-7">
@@ -106,6 +109,9 @@ const Home = ({ walletAddress, setWalletAddress }) => {
       <Navbar
         walletAddress={walletAddress}
         setWalletAddress={setWalletAddress}
+        id={""}
+        name={""}
+        age={""}
       />
       <div className="flex flex-col justify-center items-center gap-20 h-screen bg-white">
         <div className="flex flex-col items-center gap-10 bg-[#6B818C] p-20 rounded-xl shadow-xl z-1">

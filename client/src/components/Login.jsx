@@ -16,10 +16,8 @@ const Login = ({ walletAddress, setCurrent }) => {
       return;
     }
 
-    const data = [walletAddress, password];
-
     axios
-      .get(`http://localhost:5555/clients/${data}`)
+      .get(`http://localhost:5555/clients/${walletAddress}/${password}`)
       .then((res) => {
         const designation = res.data.designation;
         localStorage.setItem("designation", designation);

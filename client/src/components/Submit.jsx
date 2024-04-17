@@ -82,38 +82,38 @@ const Submit = ({ getContract }) => {
 
   return (
     <div>
-      <div className="flex flex-col gap-3 px-7 py-5 rounded-xl shadow-xl border border-[#F5F5F5]]">
-        <div className="flex justify-between gap-10">
+      <div className="flex flex-col gap-3 px-3 md:px-7 py-5 rounded-xl shadow-xl border border-[#F5F5F5]]">
+        <div className="flex justify-between gap-5 text-sm md:text-md">
           <h1>10th Marksheet : </h1>
           <input type="file" onChange={handleFileChange} />
         </div>
-        <div className="flex justify-between gap-10">
+        <div className="flex justify-between gap-5 text-sm md:text-md">
           <h1>12th Marksheet : </h1>
           <input type="file" onChange={handleFileChange} />
         </div>
-        <div className="flex justify-between gap-10">
+        <div className="flex justify-between gap-5 text-sm md:text-md">
           <h1>Aadhar : </h1>
           <input type="file" onChange={handleFileChange} />
         </div>
-        <div className="flex justify-between gap-10">
+        <div className="flex justify-between gap-5 text-sm md:text-md">
           <h1>Community Certificate : </h1>
           <input type="file" onChange={handleFileChange} />
         </div>
-        <div className="flex justify-between gap-10">
+        <div className="flex justify-between gap-5 text-sm md:text-md">
           <h1>Nativity Certificate : </h1>
           <input type="file" onChange={handleFileChange} />
         </div>
-        <div className="flex justify-between gap-10">
+        <div className="flex justify-between gap-5 text-sm md:text-md">
           <h1>Transfer Certificate : </h1>
           <input type="file" onChange={handleFileChange} />
         </div>
-        <div className="flex justify-between gap-10">
+        <div className="flex justify-between gap-5 text-sm md:text-md">
           <h1>Conduct Certificate : </h1>
           <input type="file" onChange={handleFileChange} />
         </div>
         <div className="flex justify-center mt-5">
           <button
-            className="bg-green-500 px-2 rounded-xl text-lg"
+            className="bg-green-500 px-2 rounded-xl text-md"
             onClick={() => handleSubmit()}
           >
             Submit
