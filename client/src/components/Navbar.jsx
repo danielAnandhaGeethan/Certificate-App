@@ -26,8 +26,10 @@ const Navbar = ({ walletAddress, setWalletAddress, id, name, age }) => {
         <h1 className="text-[#506691] text-2xl">{id !== "" ? id : ""}</h1>
         <div
           className={`${
-            display === true ? "flex" : "hidden"
-          } flex-col items-start md:flex-row md:items-end gap-2`}
+            display === true
+              ? "flex"
+              : "md:-ml-[90px] md:mt-0 opacity-0 -mt-[28px]"
+          } flex-col items-start md:flex-row md:items-end gap-2 transition-margin ease-in-out duration-1000`}
         >
           <h1 className="text-lg text-[#595F5A]">
             Name <span className="text-black font-bold">:</span> {name}

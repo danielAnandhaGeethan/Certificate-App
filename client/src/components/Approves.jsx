@@ -5,14 +5,14 @@ import copy from "../assets/copy.png";
 
 const Approves = ({ walletAddress, getContract }) => {
   const [approves, setApproves] = useState([]);
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState("");
   const [cids, setCids] = useState([]);
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
 
   useEffect(() => {
     getApproves();
-  });
+  }, [walletAddress]);
 
   const getApproves = async () => {
     if (walletAddress === "") {
@@ -23,22 +23,24 @@ const Approves = ({ walletAddress, getContract }) => {
       return;
     }
 
-    const data = [walletAddress];
+    const address = [walletAddress];
 
     try {
-      const response = await axios.get(`http://localhost:5555/student/${data}`);
+      const response = await axios.get(
+        `http://localhost:5555/student/${address}`
+      );
       const approved = response.data.communications;
 
       let temp = [];
       await Promise.all(
         approved.map(async (approve) => {
-          const data = [approve, 1];
+          const data = [approve[0], 1];
           const getResponse = await axios.get(
             `http://localhost:5555/usernames/${data}`
           );
 
           const username = getResponse.data;
-          temp.push(username.students[0].id);
+          temp.push({ address: approve, id: username.students[0].id });
         })
       );
 
@@ -52,24 +54,22 @@ const Approves = ({ walletAddress, getContract }) => {
     }
   };
 
-  const viewCid = async (student) => {
-    if (clicked === true) {
-      setClicked(!clicked);
+  const viewCid = async (receiver) => {
+    if (clicked !== "") {
+      setClicked("");
       return;
     }
 
     try {
-      const response = await axios.get(
-        `http://localhost:5555/usernames/${student}/${1}`
-      );
-      const username = response.data;
-      const receiver = username.students[0].address;
-
       const certificate = await getContract();
 
       const size = (await certificate.getSize(receiver)).toNumber();
 
       if (size === 0) {
+        enqueueSnackbar(`No certificates uploaded for ${receiver}`, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
         return;
       }
 
@@ -86,7 +86,7 @@ const Approves = ({ walletAddress, getContract }) => {
           setName(res.data.name);
           setAge(res.data.age);
 
-          setClicked(true);
+          setClicked(receiver);
         })
         .catch((err) => {
           console.log(err);
@@ -99,10 +99,17 @@ const Approves = ({ walletAddress, getContract }) => {
   const removeData = (key) => {
     const x = approves.filter((datum) => datum !== key);
 
+    let y = [];
+    for (const item of x) {
+      y.push(item.address);
+    }
+
+    setApproves(y);
+
     axios
       .put(
-        `http://localhost:5555/doctor/${walletAddress}/${
-          x.length === 0 ? "null" : x.join(",")
+        `http://localhost:5555/staff/${walletAddress}/${
+          y.length === 0 ? "null" : y.join(",")
         }`
       )
       .then((res) => {})
@@ -126,36 +133,41 @@ const Approves = ({ walletAddress, getContract }) => {
   };
 
   return (
-    <div>
+    <div className="h-screen">
       <SnackbarProvider />
       <div className="flex flex-col gap-4">
         {approves.length !== 0 ? (
           approves.map((approve, index) => (
-            <div
-              key={index}
-              className="bg-white/40 border border-gray-300 w-[500px] px-10 pt-4 pb-2 rounded-3xl flex flex-col items-center gap-4 shadow-xl"
-            >
-              <div>
-                <h1 className="text-center">{approve}</h1>
-              </div>
-              <div className="flex justify-between gap-48 px-3">
-                <button
-                  className="text-blue-600 font-semibold border border-blue-600 rounded-xl px-1"
-                  onClick={() => viewCid(approve)}
-                >
-                  View CID
-                </button>
-                <button
-                  className="text-red-600 font-semibold border border-red-600 rounded-xl px-1"
-                  onClick={() => removeData(approve)}
-                >
-                  Remove
-                </button>
+            <div key={index}>
+              <div className="bg-white/40 border border-gray-300 w-[500px] px-10 pt-4 pb-2 rounded-3xl flex flex-col items-center gap-4 shadow-xl">
+                <div className="flex flex-col gap-3">
+                  <h1 className="text-center text-lg font-bold">
+                    {approve.id}
+                  </h1>
+                  <h1 className="text-center font-semibold text-[#9BABA5]">
+                    Comment {"-->"}
+                    {approve.address[1] === "None" ? "-" : approve.address[1]}
+                  </h1>
+                </div>
+                <div className="flex justify-between gap-48 px-3">
+                  <button
+                    className="text-blue-600 font-semibold border border-blue-600 rounded-xl px-1 w-[85px]"
+                    onClick={() => viewCid(approve.address[0])}
+                  >
+                    {clicked === approve.address[0] ? "Close" : "View CID"}
+                  </button>
+                  <button
+                    className="text-red-600 font-semibold border border-red-600 rounded-xl px-1"
+                    onClick={() => removeData(approve)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
               <div
                 className={`${
-                  clicked === true ? "opacity-100" : "hidden"
-                } absolute mt-20 bg-[#6B818C] py-4 w-[500px] text-center rounded-3xl flex flex-col gap-5`}
+                  clicked === approve.address[0] ? "opacity-100" : "hidden"
+                } mt-2 bg-[#6B818C] bg-opacity-80 py-4 w-[500px] text-center rounded-3xl flex flex-col gap-5`}
               >
                 <h1 className="text-black/80 font-semibold flex justify-between px-8">
                   <span>Name : {name}</span>

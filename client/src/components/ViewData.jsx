@@ -7,6 +7,8 @@ const ViewData = ({ walletAddress, getContract }) => {
   const [cids, setCids] = useState([]);
   const [password, setPassword] = useState("");
   const [uploaded, setUploaded] = useState(true);
+  const [cidString, setCidString] = useState("");
+  const [display, setDisplay] = useState(false);
 
   const designation = localStorage.getItem("designation");
 
@@ -114,7 +116,7 @@ const ViewData = ({ walletAddress, getContract }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className="bg-blue-500 px-2 text-sm rounded-full text-black/90"
+          className="bg-blue-500 py-1 px-2 text-sm rounded-full text-black/90"
           onClick={(e) => getCids(e.target.innerText)}
         >
           {designation === "1"
@@ -161,15 +163,56 @@ const ViewData = ({ walletAddress, getContract }) => {
             </h1>
           </div>
         ) : (
-          <div className="flex gap-3">
-            <input
-              type="text"
-              placeholder="Enter the CIDs..."
-              className="focus:outline-none text-sm px-2 py-1 rounded-2xl border border-gray-300"
-            />
-            <button className="bg-blue-500 px-2 text-sm rounded-full text-black/90">
-              Submit
-            </button>
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3 justify-center">
+              <input
+                type="text"
+                value={cidString}
+                placeholder="Enter the CIDs..."
+                className="focus:outline-none text-sm px-2 py-1 rounded-2xl border border-gray-300"
+                onChange={(e) => setCidString(e.target.value)}
+              />
+              <button
+                className="bg-blue-500 px-2 text-sm rounded-full text-black/90 w-[61px]"
+                onClick={() => setDisplay(!display)}
+              >
+                {display === true ? "Close" : "Upload"}
+              </button>
+            </div>
+            <div
+              className={`${
+                display === true
+                  ? "flex flex-col gap-7 items-center w-full"
+                  : "hidden"
+              }`}
+            >
+              {cidString.split(",").map((cid, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col gap-4 border px-10 py-4 rounded-2xl shadow-lg"
+                >
+                  <h1 className="font-semibold text-[16px] text-center text-[#636B61]">
+                    {files[index]}
+                  </h1>
+                  <div className="flex gap-20">
+                    <button
+                      onClick={() =>
+                        handleDownload(cid, `${walletAddress}_${files[index]}`)
+                      }
+                      className="bg-[#5E977D] px-2 rounded-full text-[#E5EAD6] hover:scale-105"
+                    >
+                      Download
+                    </button>
+                    <button
+                      onClick={() => handleView(cid)}
+                      className="bg-[#6EAFAF] px-2 text-[#E5EAD6] rounded-full hover:scale-105"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

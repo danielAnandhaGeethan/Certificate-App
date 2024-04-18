@@ -22,6 +22,9 @@ const ClientSchema = new mongoose.Schema({
     required: true,
   },
   communications: {
+    type: [[String]],
+  },
+  transactions: {
     type: [String],
   },
 });

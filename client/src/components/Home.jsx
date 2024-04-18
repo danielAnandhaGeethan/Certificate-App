@@ -119,7 +119,7 @@ const Home = ({ walletAddress, setWalletAddress }) => {
             !!! Account Not Connected !!!
           </h1>
           <button
-            className="bg-white/70 p-3 rounded-full hover:scale-105 shadow-xl font-semibold border border-white/10"
+            className="bg-white/70 p-3 rounded-md hover:rounded-full shadow-md font-semibold border border-white/10"
             onClick={connectWallet}
           >
             Connect Blockchain Account

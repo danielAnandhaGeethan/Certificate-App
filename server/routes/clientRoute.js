@@ -263,11 +263,12 @@ router.put("/student/:data", async (req, res) => {
     const data = req.params.data.split(",");
 
     const sender = data[0];
-    const receiver = data[1];
+    const comment = data[1];
+    const receiver = data[2];
 
     const updatedClient = await Client.findOneAndUpdate(
       { address: receiver },
-      { $push: { communications: sender } },
+      { $push: { communications: [sender, comment] } },
       { new: true }
     );
 
@@ -324,6 +325,32 @@ router.put("/student/:address/:approves", async (req, res) => {
     );
 
     if (updatedApproves) {
+      return res.status(200).send({ message: "Done" });
+    } else {
+      return res.status(400).send({ message: "No such user" });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+});
+
+router.put("/student", async (req, res) => {
+  try {
+    const { address, transactions } = req.body;
+
+    let modifiedTransactions;
+    if (transactions === "null") modifiedTransactions = [];
+    else modifiedTransactions = transactions;
+
+    const updatedTransactions = await Client.findOneAndUpdate(
+      { address: address },
+      { $set: { transactions: modifiedTransactions } },
+      { new: true }
+    );
+
+    if (updatedTransactions) {
       return res.status(200).send({ message: "Done" });
     } else {
       return res.status(400).send({ message: "No such user" });

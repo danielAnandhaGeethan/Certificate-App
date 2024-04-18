@@ -51,7 +51,7 @@ const Register = ({ walletAddress, setCurrent }) => {
           autoHideDuration: 1000,
         });
 
-        const x = designation === "student" ? 1 : 2;
+        const x = designation === "student" ? "1" : "2";
         localStorage.setItem("designation", x);
 
         axios

@@ -4,7 +4,6 @@ import React, { useState } from "react";
 
 const Submit = ({ getContract }) => {
   const [files, setFiles] = useState([]);
-  const [cids, setCids] = useState([]);
 
   const handleFileChange = (event) => {
     event.preventDefault();
@@ -51,7 +50,6 @@ const Submit = ({ getContract }) => {
 
       const uploadedCids = await Promise.all(promises);
 
-      console.log(uploadedCids);
       setFiles([]);
 
       return uploadedCids;
@@ -63,7 +61,6 @@ const Submit = ({ getContract }) => {
   const handleSubmit = async () => {
     try {
       const uploadedCids = await sendDataToPinata();
-      setCids(uploadedCids);
       const certificate = await getContract();
 
       const txPromises = uploadedCids.map(async (cid) => {

@@ -19,7 +19,7 @@ const Login = ({ walletAddress, setCurrent }) => {
     axios
       .get(`http://localhost:5555/clients/${walletAddress}/${password}`)
       .then((res) => {
-        const designation = res.data.designation;
+        const designation = res.data.designation.toString();
         localStorage.setItem("designation", designation);
 
         enqueueSnackbar("Logged In successfully", {
@@ -28,7 +28,7 @@ const Login = ({ walletAddress, setCurrent }) => {
         });
 
         setTimeout(() => {
-          navigate(designation === 1 ? "/student" : "/staff");
+          navigate(designation === "1" ? "/student" : "/staff");
         }, 1000);
       })
       .catch((err) => {
