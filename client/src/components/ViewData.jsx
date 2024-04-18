@@ -2,8 +2,9 @@ import axios from "axios";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 import { files } from "../constants/constants";
+import DisplayFiles from "./DisplayFiles";
 
-const ViewData = ({ walletAddress, getContract }) => {
+const ViewData = ({ walletAddress, getContract, id }) => {
   const [cids, setCids] = useState([]);
   const [password, setPassword] = useState("");
   const [uploaded, setUploaded] = useState(true);
@@ -129,32 +130,12 @@ const ViewData = ({ walletAddress, getContract }) => {
       <div>
         {uploaded === true ? (
           <div className="flex flex-col gap-7 items-center w-full">
-            {cids.map((cid, index) => (
-              <div
-                key={index}
-                className="flex flex-col gap-4 border px-10 py-4 rounded-2xl shadow-lg"
-              >
-                <h1 className="font-semibold text-[16px] text-center text-[#636B61]">
-                  {files[index]}
-                </h1>
-                <div className="flex gap-20">
-                  <button
-                    onClick={() =>
-                      handleDownload(cid, `${walletAddress}_${files[index]}`)
-                    }
-                    className="bg-[#5E977D] px-2 rounded-full text-[#E5EAD6] hover:scale-105"
-                  >
-                    Download
-                  </button>
-                  <button
-                    onClick={() => handleView(cid)}
-                    className="bg-[#6EAFAF] px-2 text-[#E5EAD6] rounded-full hover:scale-105"
-                  >
-                    View
-                  </button>
-                </div>
-              </div>
-            ))}
+            <DisplayFiles
+              data={cids}
+              handleDownload={handleDownload}
+              handleView={handleView}
+              id={id}
+            />
           </div>
         ) : designation === "1" ? (
           <div>
@@ -186,32 +167,12 @@ const ViewData = ({ walletAddress, getContract }) => {
                   : "hidden"
               }`}
             >
-              {cidString.split(",").map((cid, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-4 border px-10 py-4 rounded-2xl shadow-lg"
-                >
-                  <h1 className="font-semibold text-[16px] text-center text-[#636B61]">
-                    {files[index]}
-                  </h1>
-                  <div className="flex gap-20">
-                    <button
-                      onClick={() =>
-                        handleDownload(cid, `${walletAddress}_${files[index]}`)
-                      }
-                      className="bg-[#5E977D] px-2 rounded-full text-[#E5EAD6] hover:scale-105"
-                    >
-                      Download
-                    </button>
-                    <button
-                      onClick={() => handleView(cid)}
-                      className="bg-[#6EAFAF] px-2 text-[#E5EAD6] rounded-full hover:scale-105"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-              ))}
+              <DisplayFiles
+                data={cidString}
+                handleDownload={handleDownload}
+                handleView={handleView}
+                id={id}
+              />
             </div>
           </div>
         )}

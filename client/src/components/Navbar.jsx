@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import menu from "../assets/menu.png";
+import Buttons from "./Buttons";
 
 const Navbar = ({ walletAddress, setWalletAddress, id, name, age }) => {
   const navigate = useNavigate();
@@ -39,34 +40,17 @@ const Navbar = ({ walletAddress, setWalletAddress, id, name, age }) => {
           </h1>
         </div>
       </div>
-      <div
-        className="py-4 flex items-center gap-4 relative group inline-block"
-        onClick={() => navigate("/")}
-      >
+      <div className="py-4 flex items-center gap-4 relative group inline-block">
         <h1 className="text-3xl font-semibold cursor-pointer text-[#6B818C]">
           ABC University
         </h1>
       </div>
       <div className="flex-row absolute right-0 mt-1 hidden md:flex">
-        {window.location.href !== "http://localhost:3000/" ? (
-          <div className="cursor-pointer" onClick={logout}>
-            <h1 className="font-semibold text-white text-[15px] bg-black px-2 py-1 mr-5 mt-4 rounded-xl text-center">
-              Log out
-            </h1>
-          </div>
-        ) : (
-          ""
-        )}
-
-        {walletAddress !== null ? (
-          <div className="cursor-pointer" onClick={disconnect}>
-            <h1 className="font-semibold text-white text-[15px] bg-black px-2 py-1 mr-5 mt-4 rounded-xl text-center">
-              Disconnect
-            </h1>
-          </div>
-        ) : (
-          ""
-        )}
+        <Buttons
+          walletAddress={walletAddress}
+          logout={logout}
+          disconnect={disconnect}
+        />
       </div>
       <div className="flex flex-col absolute right-0 md:hidden">
         <img
@@ -76,25 +60,11 @@ const Navbar = ({ walletAddress, setWalletAddress, id, name, age }) => {
           onClick={() => setClicked(!clicked)}
         />
         <div className={`${clicked === true ? "block" : "hidden"}`}>
-          {window.location.href !== "http://localhost:3000/" ? (
-            <div className="cursor-pointer" onClick={logout}>
-              <h1 className="font-sans text-white text-[15px] bg-black px-2 py-1 mr-5 mt-4 rounded-xl text-center">
-                Log out
-              </h1>
-            </div>
-          ) : (
-            ""
-          )}
-
-          {walletAddress !== null ? (
-            <div className="cursor-pointer" onClick={disconnect}>
-              <h1 className="font-sans text-white text-[15px] bg-black px-2 py-1 mr-5 mt-4 rounded-xl text-center">
-                Disconnect
-              </h1>
-            </div>
-          ) : (
-            ""
-          )}
+          <Buttons
+            walletAddress={walletAddress}
+            logout={logout}
+            disconnect={disconnect}
+          />
         </div>
       </div>
     </div>

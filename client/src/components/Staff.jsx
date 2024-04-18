@@ -114,8 +114,8 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           {current === 1 ? (
             <ViewData
               walletAddress={walletAddress}
-              designation={designation}
               getContract={getContract}
+              id={id}
             />
           ) : current === 2 ? (
             <Approves walletAddress={walletAddress} getContract={getContract} />

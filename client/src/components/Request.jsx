@@ -1,144 +1,33 @@
-import axios from "axios";
-import { SnackbarProvider, enqueueSnackbar } from "notistack";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-const Request = ({ walletAddress, transacts, setTransacts }) => {
-  const [requests, setRequests] = useState([]);
-
-  useEffect(() => {
-    getRequests();
-  }, [walletAddress]);
-
-  const getRequests = async () => {
-    if (walletAddress === "") {
-      enqueueSnackbar("Not Logged In", {
-        variant: "warning",
-        autoHideDuration: 4000,
-      });
-      return;
-    }
-
-    const address = [walletAddress];
-
-    try {
-      const response = await axios.get(
-        `http://localhost:5555/student/${address}`
-      );
-      const requested = response.data.communications;
-
-      let temp = [];
-      await Promise.all(
-        requested.map(async (request) => {
-          const data = [request[0], 2];
-          const getResponse = await axios.get(
-            `http://localhost:5555/usernames/${data}`
-          );
-
-          const username = getResponse.data;
-          temp.push({ address: request, id: username.staff[0].id });
-        })
-      );
-
-      setRequests(temp);
-    } catch (err) {
-      console.log(err);
-      enqueueSnackbar("Server Error !!!", {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
-    }
-  };
-
-  const addToStaff = (receiver) => {
-    const data = [walletAddress, receiver.address[0]];
-
-    axios
-      .put(`http://localhost:5555/student/${data}`)
-      .then((res) => {
-        removeRequest(receiver);
-
-        enqueueSnackbar(`Approved for ${receiver.address[0]}`, {
-          variant: "success",
-          autoHideDuration: 3000,
-        });
-      })
-      .catch((err) => {
-        enqueueSnackbar("Server Error !!!", {
-          variant: "error",
-          autoHideDuration: 3000,
-        });
-      });
-
-    axios
-      .put("http://localhost:5555/student", {
-        address: walletAddress,
-        transactions: [...transacts, receiver.address[0]],
-      })
-      .then((res) => {
-        setTransacts([...transacts, receiver.address[0]]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const removeRequest = (data) => {
-    const x = requests.filter((request) => request !== data);
-
-    let y = [];
-    for (const item of x) {
-      y.push(item.address);
-    }
-
-    setRequests(y);
-    axios
-      .put(
-        `http://localhost:5555/student/${walletAddress}/${
-          y.length === 0 ? "null" : y.join(",")
-        }`
-      )
-      .then((res) => {})
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
+const Request = ({ index, request, addToStaff, removeRequest }) => {
   return (
     <div>
-      <SnackbarProvider />
-      <div className="flex flex-col gap-4">
-        {requests.length !== 0 ? (
-          requests.map((request, index) => (
-            <div
-              key={index}
-              className="bg-white/40 px-10 pt-3 pb-2 rounded-3xl flex flex-col gap-3 shadow-xl border w-[500px]"
-            >
-              <div className="flex flex-col gap-3">
-                <h1 className="text-center text-lg font-bold">{request.id}</h1>
-                <h1 className="text-center font-semibold text-[#9BABA5]">
-                  Comment {"-->"}
-                  {request.address[1] === "None" ? "-" : request.address[1]}
-                </h1>
-              </div>
-              <div className="flex justify-between px-3">
-                <button
-                  className="text-green-700 font-semibold border border-green-700 rounded-xl px-1"
-                  onClick={() => addToStaff(request)}
-                >
-                  Approve
-                </button>
-                <button
-                  className="text-red-600 font-semibold border border-red-600 rounded-xl px-1"
-                  onClick={() => removeRequest(request)}
-                >
-                  Deny
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <h1 className="text-xl font-semibold">!!! No Pending Requests !!!</h1>
-        )}
+      <div
+        key={index}
+        className="bg-white/40 px-10 pt-3 pb-2 rounded-3xl flex flex-col gap-3 shadow-xl border w-[500px]"
+      >
+        <div className="flex flex-col gap-3">
+          <h1 className="text-center text-lg font-bold">{request.id}</h1>
+          <h1 className="text-center font-semibold text-[#9BABA5]">
+            Comment {"-->"}
+            {request.address[1] === "None" ? "-" : request.address[1]}
+          </h1>
+        </div>
+        <div className="flex justify-between px-3">
+          <button
+            className="text-green-700 font-semibold border border-green-700 rounded-xl px-1"
+            onClick={() => addToStaff(request)}
+          >
+            Approve
+          </button>
+          <button
+            className="text-red-600 font-semibold border border-red-600 rounded-xl px-1"
+            onClick={() => removeRequest(request)}
+          >
+            Deny
+          </button>
+        </div>
       </div>
     </div>
   );

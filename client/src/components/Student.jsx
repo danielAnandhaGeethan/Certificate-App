@@ -6,7 +6,7 @@ import Submit from "./Submit";
 import Transactions from "./Transactions";
 import ViewData from "./ViewData";
 import Send from "./Send";
-import Request from "./Request";
+import Requests from "./Requests";
 import request from "../assets/request.png";
 import submit from "../assets/submit.png";
 import search from "../assets/search.png";
@@ -168,11 +168,11 @@ const Student = ({ walletAddress, setWalletAddress }) => {
           ) : current === 3 ? (
             <ViewData
               walletAddress={walletAddress}
-              designation={designation}
               getContract={getContract}
+              id={id}
             />
           ) : current === 4 ? (
-            <Request
+            <Requests
               walletAddress={walletAddress}
               transacts={transacts}
               setTransacts={setTransacts}
